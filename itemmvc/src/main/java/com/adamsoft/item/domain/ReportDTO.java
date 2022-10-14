@@ -2,6 +2,13 @@ package com.adamsoft.item.domain;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ReportDTO {
 	private String name;
 	//file  은 MultipartFile로 생성

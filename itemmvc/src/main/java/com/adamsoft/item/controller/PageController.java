@@ -19,8 +19,6 @@ import lombok.extern.log4j.Log4j;
 
 //Controller를 만들기 위한 어노테이션
 @Controller
-//로그 출력을 위한 인스턴스를 생성하기 위한 어노테이션
-@Log4j
 public class PageController {
 	//처리할 URL 과 전송 방식
 	@RequestMapping(value="blog/{num}",
