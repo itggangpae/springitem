@@ -24,7 +24,7 @@
 		</property>
 	</bean>
 
-
+	<!-- XML을 이용하는 MyBatis 설정
 	<bean id="sqlSessionFactory"
 		class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
@@ -37,6 +37,17 @@
 	<bean id="sqlSession"
 		class="org.mybatis.spring.SqlSessionTemplate">
 		<constructor-arg index="0" ref="sqlSessionFactory" />
+	</bean>
+	 -->
+	 
+	 <!-- 인터페이스를 이용하는 MyBatis 설정 -->
+	 <bean id="sqlSessionFactory"
+		class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage"
+		value="com.adamsoft.item.dao"/>
 	</bean>
 	
 	

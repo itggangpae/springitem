@@ -14,10 +14,10 @@ import com.adamsoft.item.domain.ItemDTO;
 //@Repository, @Service, @Controller, @RestController
 //를 기재하면 역할까지 부여합니다.
 
-@Repository
+//@Repository
 public class ItemRepository {
 
-	@Autowired
+//	@Autowired
 	private SqlSession sqlSession;
 	
 	//테이블의 전체 데이터를 가져오는 메서드
@@ -26,4 +26,16 @@ public class ItemRepository {
 			"itemmapper.getall");
 	}
 	
+	//하나의 데이터를 가져오는 메서드
+	public ItemDTO getItem(Integer itemid) {
+		return sqlSession.selectOne(
+			"itemmapper.getitem", itemid);
+	}
+	
 }
+
+
+
+
+
+

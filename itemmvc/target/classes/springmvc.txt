@@ -1,0 +1,1118 @@
+**Spring MVC Project
+1.Spring Project 종류
+1)Spring Legacy Project
+=>이전에 많이 사용하던 방식으로 MVC 패턴을 적용한 형태의 프로젝트를 미리 만들어두고 이를 다운로드 받아서 사용하는 구조
+전자 정부 프레임워크 나 애니 프레임워크 등에서 데이터베이스 연동 샘플을 다운로드 해주기도 합니다.
+=>설정해야 할 내용이 많아서 프로그램을 개발하는 입장에서는 이해하기가 어려움
+=>웹 프로젝트의 경우 별도의 WAS(Web Container, Web Application Server)를 설치해야 실행할 수 있음
+=>Eclipse 의 경우 STS3 플러그 인을 설치하거나 STS3 버전을 사용해야 합니다.
+
+2)Spring Starter Project(Spring Boot)
+=>기본적인 설정 내용을 전부 해놓고 이를 숨겨둡니다.
+=>별도의 Web Container를 설치하지 않아도 웹 프로젝트를 실행할 수 있습니다.
+=>최근에는 이 방식을 선호
+
+2.Spring MVC Project 생성
+=>[File] - [New] 한 후 others를 눌러서 spring legacy project를 찾아서 Spring MVC Project를 선택
+
+=>프로젝트 이름 과 기본 패키지 이름을 작성하는데 패키지 이름의 3번째는 ContextRoot(프로토콜://도메인:포트번호/이자리) 가 됩니다.
+
+=>maven 기반 Spring 3를 사용하는 웹 프로젝트가 생성됩니다.
+
+3.Java Build Tool
+1)maven
+=>pom.xml에 기반한 빌드 도구
+=>ant의 단점을 보완한 빌드 도구
+
+2)gradle
+=>build.gradle에 기반한 빌드 도구
+=>ant 와 maven 의 장점을 혼합한 빌드 도구
+=>Android Studion 의 기본 빌드 도구이며 최근에는 maven 보다 gradle을 선호
+
+3)jenkins
+=>지속적인 배포(CI/CD)를 편리하게 해주는 빌드 도구 - 클라우드 환경에서 필수
+
+4.디렉토리 구조
+=>src/main/java: 컴파일 되어야 하는 자바 코드가 위치해야 디렉토리
+=>src/main/resources: 컴파일되지 않아도 되는 파일들이 위치해야 하는 디렉토리
+
+=>src/test/java: 테스트를 위해서 컴파일 되어야 하는 자바 코드가 위치해야 디렉토리
+=>src/test/resources: 테스트를 위해서 컴파일되지 않아도 되는 파일들이 위치해야 하는 디렉토리
+
+test 디렉토리의 내용은 배포될 때는 자동으로 삭제됩니다.
+
+=>src/main/webapp/WEB-INF/classes: 컴파일 된 클래스들이 위치해야 하는 디렉토리
+=>src/main/webapp/WEB-INF/spring: spring 설정 파일의 기본 위치 - 변경 가능
+	root-context.xml: 모든 요청에서 사용하는 설정 파일
+	servlet-context.xml: 등록된 URL에서만 사용하는 설정 파일
+	
+=>src/main/webapp/WEB-INF/views: 기본 뷰가 위치하는 디렉토리 - 변경 가능
+=>src/main/webapp/WEB-INF/web.xml: 웹 프로젝트 설정 파일
+
+5.pom.xml 파일의 의존성 설정(외부 라이브러리의 의존성)
+=>repositories 설정이 없으면 dependencies 에 설정된 라이브러리를 자신의 컴퓨터의 .m2 라는 디렉토리에서 찾고 이 디렉토리에 없으면 중앙 저장소에서 찾아서 다운로드해서 .m2에 저장하고 프로젝트의 build path에 추가해서 사용
+=>repositories 설정이 있으면 .m2 에 없는 경우 repositories 에 설정된 곳에서 먼저 찾고 없으면 중앙 저장소에서 찾습니다.
+repositories를 만져야 하는 경우는 Oracle을 사용하는 경우
+
+6.pom.xml 파일의 기본 설정 변경
+=>java 버전 변경: <java-version>1.8</java-version>
+=>spring 버전 변경: <org.springframework-version>5.0.7.RELEASE</org.springframework-version>
+
+=>자바 테스트 라이브러리인 JUnit의 버전을 수정
+<dependency>
+	<groupId>junit</groupId>
+	<artifactId>junit</artifactId>
+	<version>4.12</version>
+	<scope>test</scope>
+</dependency> 
+
+=>서블릿 버전 변경
+<dependency>
+	<groupId>javax.servlet</groupId>
+	<artifactId>javax.servlet-api</artifactId>
+	<version>3.1.0</version>
+</dependency>
+
+=>자바 컴파일러 버전을 변경
+<source>1.8</source>
+<target>1.8</target>
+
+=>pom.xml 파일을 저장하고 다시 실행
+
+7.lombok
+=>데이터를 표현하는 클래스(VO, DTO, Entity)를 만들 때 속성이외의 필수 메서드를 쉽게 구현하기 위한 라이브러리
+1)설치
+=>https://projectlombok.org/download 에서 jar 파일을 다운로드
+=>터미널에서 java -jar 다운로드받은파일경로
+=>lombok을 사용할 IDE를 선택하고 IDE를 재시작
+
+2)사용 가능한 어노테이션
+@NoArgsConstructor: 매개변수가 없는 Default 생성자 생성
+@AllArgsConstructor: 모든 속성을 매개변수로 받는 생성자 생성
+@RequiredArgsConstructor: final 이나 @NotNull이 붙은 필드를 매개변수로 받는 생성자를 생성
+
+@Builder: 인스턴스 생성 과 속성의 값을 편리하게 설정하도록 해주는 Builder 패턴을 적용해주는 어노테이션
+클래스이름.builder().속성이름(값)....build();
+
+@Getter: 속성의 get 메서드 생성
+@Setter: 속성의 set 메서드 생성
+
+@ToString: 모든 속성의 값을 묶어서 하나의 문자열로 리턴하는 toString 메서드 생성
+출력하는 메서드에 인스턴스를 대입하면 toString 메서드가 호출되서 그 결과를 출력합니다.
+
+@Data: Getter, Setter, RequiredArgsConstructor, toString, EqualsAndHashCode 를 한꺼번에 적용
+
+@NotNull: null 체크
+@Value: 설정 내용을 호출해서 값을 대입
+@EqualsAndHashCode: equals 메서드 와 hashCode 메서드를 생성
+@Log: 로그 속성을 자동으로 추가해서 로그 내용을 기록하기 위한 어노테이션
+
+8.pom.xml 파일에 spring test 라이브러리 와 lombok 라이브러리의 의존성을 추가
+ <dependency>
+	<groupId>org.springframework</groupId>
+	<artifactId>spring-test</artifactId>
+	<version>${org.springframework-version}</version>
+</dependency>
+		
+<!-- lombok -->
+<dependency>
+	<groupId>org.projectlombok</groupId>
+	<artifactId>lombok</artifactId>
+	<version>1.18.24</version>
+	<scope>provided</scope>
+</dependency>
+
+9.ContextRoot를 /로 변경
+1)프로젝트의 properties 변경
+=>프로젝트를 선택하고 마우스 오른쪽을 누른 후 [Properties]를 선택하고 Web Project Settings 에서 Context root를 /로 변경
+
+2)Servers 디렉토리의 server.xml 파일의 Context 태그의 path를 /로 변경
+
+10.파일 출력 실습
+=>home.jsp 내용을 수정해도 되지만 web.xml 파일에 설정된 파일을 만들어도 됩니다.
+webapp 디렉토리에 index.jsp 파일을 만들면 이 파일이 시작 파일이 됩니다.
+web.xml 파일의 설정때문 입니다.
+
+1)webapp 디렉토리에 index.jsp 파일을 만들고 작성한 후 실행
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>아이템</title>
+</head>
+<body>
+	<a href="hello">안녕하세요</a>
+</body>
+</html>
+
+2)hello 요청 처리를 위한 코드를 작성
+=>별도의 Controller를 만들어서 처리해도 되고 제공되는 HomeController를 수정해도 됩니다.
+=>src/main/java에 가면 제공되는 HomeController가 있는데 여기에 작성
+	//hello 라는 요청이 오면 hello라는 뷰 이름을 리턴
+	//뷰는 servlet-context.xml 파일의 
+	//ViewResolver 의 내용을 참조해서 위치를 결정합니다.
+	@RequestMapping(value = "hello", 
+			method = RequestMethod.GET)
+	public String hello(Model model) {
+	
+		return "hello";
+	}
+
+=>src/main/webapp/WEB-INF/spring/appServlet/servlet-context.xml 확인
+
+=>WEB-INF/views 디렉토리에 hello.jsp를 만들어서 작성하고 다시 실행해서 확인
+
+11.DispatcherServlet
+1)Controller 
+=>FrontController: 모든 요청을 받아서 처리하는 Controller
+
+=>PageController: 특정한 URL을 받아서처리하는 Controller
+
+=>대부부은 둘 다 구성해서 전체적인 제어는 FrontController에서 하고 세부적인 제어를 PageController를 이용해서 구현
+
+2)DispatcherServlet
+=>Spring에서 FrontController 역할을 수행하는 객체
+=>web.xml 파일에 이를 설정이 작성되어 있으며 수정이 가능합니다.
+
+3)URL Pattern
+=> /*: 모든 요청을 처리
+=> /: .jsp를 제외한 모든 요청을 처리
+=> /디렉토리/*: 디렉토리가 포함된 모든 요청을 처리
+=>*.확장자: 확장자로 끝나는 모든 요청을 처리
+=>/경로명: 경로에 해당하는 요청을 처리
+
+4)주의할 점
+=>디렉토리 패턴 과 확장자 패턴은 동시에 사용할 수 없음
+=>예전에는 확장자 패턴을 많이 사용했는데 최근에는 디렉토리 패턴을 많이 사용
+=>/ 나 /* 을 사용할 때는 .css 나 .js 도 Controller가 처리할려고 해서 404 에러가 발생할 수 있는데 Controller가 처리하지 못하는 요청은 Web Container 가 처리하도록 Dispatcher-Servlet 에 <mvc:default-servlet-handler>를 추가해 주어야 합니다.
+
+5)파라미터 인코딩 설정
+=>GET 방식의 파라미터는 Web Container 가 처리
+최근의 Web Container 들은 대부분 UTF-8을 처리할 수 있도록 설정되어 있기 때문에 대부분 인코딩 설정을 하지 않습니다.
+=>POST 방식은 애플리케이션에서 직접 처리해야 합니다.
+Spring Legacy Project 에서는 web.xml 파일에 파라미터 인코딩을 위한 필터 클래스를 등록해야 합니다.
+
+	<filter>
+		<filter-name>encodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter
+		</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>encodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+
+12.Page Controller
+=>클라이언트의 요청을 받아서 필요한 로직을 호출하고 출력할 뷰를 설정하는 클래스
+
+1)생성 방법
+=>Controller 인터페이스를 implements 해서 생성
+
+=>@Controller 나 @RestController 어노테이션을 이용해서 생성
+
+2)클래스에 작성하는 어노테이션
+=>@Log4j: log 라는 객체를 생성해서 제공해주는에 이 객체를 이용해서 로그를 출력할 수 있음
+System.out.print 계열의 메서드를 가지고 로그를 출력할 수 도 있는데 이 경우는 개발이 끝나고 나면 모두 삭제해야 하지만 log를 이용해서 출력한 내용은 배포를 할 때 모두 제거가 됩니다.
+
+=>@RequestMapping: 클래스 위에 작성하면 모든 요청 처리 메서드의 URL 앞에 이 URL이 추가됩니다.
+
+3)요청 처리 메서드의 기본적인 형태
+@RequestMapping(url 만 작성하기도 하고 url 과 method를 작성)
+public 리턴타입 이름(매개변수 나열){
+	필요한 로직을 호출
+}
+
+=>hello 라는 요청을 처리하고자 하는 메서드
+@RequestMapping("hello")
+
+=>hello를 POST 방식으로 요청했을 때 만 처리하는 메서드
+@RequestMapping(value="hello", method=RequestMethod.POST)
+
+=>여러 개의 URL을 처리하고자 하는 경우는 value={"URL", "URL"...}
+
+4)@PathVariable
+=>요청 경로의 일부분을 파라미터로 사용하고자 할 때 사용하는 어노테이션
+=>이 경우는 아래처럼 처리
+https://ggangpae1.tistory.com/286 : 286 부분을 파라미터로 사용
+
+@RequestMapping("https://ggangpae1.tistory.com/{num}")
+public String process(@PathVariable int num){
+	//num이 286 이 됩니다.
+}
+
+=>자료형은 적절하게 형 변환이 되서 대입됩니다.
+
+5)현재 프로젝트에서 링크의 마지막 부분을 파라미터로 만들어서 결과 페이지에서 파라미터를 출력하기
+=>index.jsp 파일에 링크를 하나 추가
+<a href="blog/1000">URL 파라미터</a><br />
+
+=>기본 패키지 안에 요청을 처리할 Controller 클래스를 만들고 위의 요청을 처리할 메서드를 작성: controller.PageController
+
+//Controller를 만들기 위한 어노테이션
+@Controller
+//로그 출력을 위한 인스턴스를 생성하기 위한 어노테이션
+@Log4j
+public class PageController {
+	//처리할 URL 과 전송 방식
+	@RequestMapping(value="blog/{num}",
+			method=RequestMethod.GET)
+	//Model은 뷰에게 데이터를 넘기기 위한 객체
+	public String blog(
+		@PathVariable int num, Model model) {
+		
+		//뷰에게 데이터 전달
+		//num 이라는 이름으로 num 이라는 데이터를 전달
+		model.addAttribute("num", num);
+		
+		//출력할 뷰 이름 설정
+		return "blog";
+		
+	}
+	
+}
+
+=>WEB-INF/views 디렉토리에 blog.jsp 파일을 만들고 작성한 후 실행해서 확인
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>결과 페이지</title>
+</head>
+<body>
+num:${num}
+</body>
+</html>
+
+6)파라미터 처리
+=>Parameter: 클라이언트가 서버에게 전달하는 데이터
+=>web에서는 GET 방식 과 POST 방식으로 나눕니다.
+=>GET 방식
+URL에 ?를 추가하고 이름=값 의 형태로 붙여서 전송하는 방식
+여러 개를 전송할 때는 이름=값 뒤에 &를 추가하고 작성하면 됩니다.
+전송이 지연되는 경우 자동 재전송 기능이 있음
+데이터 길이에 제한이 있음(255자)
+값이 URL에 붙어있어서 노출이 되기 때문에 보안성이 떨어집니다.
+링크 뒤에 직접 작성해서 전송할 수 있고 form 의 데이터를 GET 방식으로 전송할 수 있고 ajax를 이용해서 GET 방식으로 전송 가능
+직접 작성할 때는 반드시 인코딩 설정을 해주어야 합니다.
+
+=>POST 방식
+파라미터를 요청 본문에 포함시켜 전송하는 방식
+파라미터가 보이지 않음
+데이터 길이에 제한이 없음
+form 의 데이터를 POST 방식으로 전송하던가 ajax를 이용해서 POST 방식으로 전송할 수 있습니다.
+file 이나 password를 전송하는 경우는 반드시 POST 방식으로 처리해야 합니다.
+
+=>Spring 의 파라미터 읽기
+HttpServletRequest 나 MultipartHttpServletRequest(File이 있는 경우) 객체를 요청 처리 메서드의 파라미터로 만들어서 getParameter 나 getParameterValues 메서드로 읽어내는 방식
+
+요청 처리 메서드의 매개변수로 @RequestParam("파라미터이름") 자료형 변수명 을 추가해서 파라미터를 읽어내는 방식
+이 경우는 파라미터의 값이 자료형으로 강제 형 변환을 수행해 줍니다.
+자료형이 안 맞으면 에러가 발생
+
+Command(파라미터 이름으로 만들어진 속성들을 소유한 클래스) 객체를 이용하는 방식 - 권장
+
+File 파라미터의 자료형은 MultipartFile 이고 File 이 있는 경우는 Dispatcher-Servlet에 File을 위한 설정을 추가해주어야 합니다.
+
+7)Controller에서 파라미터 읽기
+=>index.jsp 파일에 링크를 추가
+<a href="parameter">파라미터 읽기</a><br />
+
+=>Controller에서 parameter 요청을 처리하는 메서드 작성
+@RequestMapping(value="parameter", method=RequestMethod.GET)
+public String parameter(Model model) {
+	return "parameter";
+}
+
+=>views 디렉토리에 parameter.jsp 파일을 만들고 작성
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>파라미터 전송</title>
+</head>
+<body>
+	<a href="getlink?name=adam&job=singer">
+	링크를 이용한 파라미터 전송</a><br/>
+	
+	<h3>GET 방식의 Form 전송</h3>
+	<form action="getform">
+		이름:<input type="text" name="name"/><br/>
+		비번:<input type="password" name="password"/>
+		<br/>
+		<input type="submit" value="전송"/>
+	</form>
+	
+	<h3>POST 방식의 Form 전송</h3>
+	<form action="postform" method="post">
+		이름:<input type="text" name="name"/><br/>
+		비번:<input type="password" name="password"/>
+		<br/>
+		<input type="submit" value="전송"/>
+	</form>
+</body>
+</html>
+
+=>form의 데이터를 받기 위한 Command 객체의 클래스 생성 - domain.MemberDTO
+
+@Data
+@Builder
+@NoArgsConstructor
+public class MemberDTO {
+	private String name;
+	private String password;
+	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	
+	@Override
+	public String toString() {
+		return "MemberDTO [name=" + name + ", password=" + password + "]";
+	}
+}
+
+
+=>PageController에 3개의 요청 처리 메서드를 생성하고 파라미터를 읽어서 콘솔에 출력
+
+	//파라미터를 HttpServletRequest를 이용해서 읽기
+	@RequestMapping(value="getlink",
+			method=RequestMethod.GET)
+	public void getlink(
+		HttpServletRequest request, Model model) {
+		String name = request.getParameter("name");
+		String job = request.getParameter("job");
+		System.out.println(name);
+		System.out.println(job);
+	}
+	
+	//파라미터를 @RequestParam을 이용해서 읽기
+	@RequestMapping(value="getform",
+			method=RequestMethod.GET)
+	public void getfor(
+		@RequestParam("name") String name,
+		@RequestParam("password") String password,
+		Model model) {
+		System.out.println(name);
+		System.out.println(password);
+	}
+	
+	//파라미터를 Command 객체을 이용해서 읽기
+	@RequestMapping(value="postform",
+			method=RequestMethod.POST)
+	public void postform(
+			MemberDTO dto,
+			Model model) {
+			System.out.println(dto);
+	}
+	
+	
+=>최근에는 파라미터가 1개 일 때는 URL에 기재하는 방식을 많이 사용하고 여러 개의 파라미터 일 때는 Command 객체를 이용하는 방식을 많이 사용합니다.
+Controller에서 읽은 파라미터를 Service에게 바로 넘겨서 Service 가 바로 사용할 수 있는 형태로 만듭니다.
+
+8)Controller의 요청 처리 메서드의 파라미터
+=>HttpServeltRequest, HttpServletResponse, HttpSession
+=>Map, Model, ModelMap: 뷰에 전달할 데이터를 생성하기 위한 파라미터
+=>@RequestParam
+=>@PathVariable
+=>Command 객체
+=>@ModelAttribute를 이용하면 Command 객체를 결과 페이지에 request에 저장해서 전송할 수 있습니다.
+유효성 검사에서 이용
+=>Errors, BindingResult: 유효성 검사 할 때 이용
+=>RedirectAttributes: 결과 페이지에 한 번 만 사용할 수 있는 데이터를 전송할 때 이용 - Redirect 로 이동할 때 Request에 저장하면 데이터가 전달이 안되고 Session에 저장하면 지우기가 번거로운데 RedirectAttributes를 이용하면 Redirect로 이동해도 전달이 되고 한 번 사용하면 자동으로 소멸이 됩니다.
+
+=>최근의 Web Programming에서는 View에 데이터를 전달하는 형태를 권장하지 않기 때문에 실제로는 파라미터를 읽어내는 것들만 알아도 됩니다. 
+
+
+13.File Upload 처리
+1)파일 업로드 폼을 생성
+	<h3>파일 업로드</h3>
+	<form action="fileupload" method="post" 
+	enctype="multipart/form-data">
+		이름:<input type="text" name="name"/>
+		<br />
+		파일:<input type="file" name="pictureurl"/>
+		<br/>
+		<input type="submit" value="업로드" />
+	</form>
+
+2)pom.xml 파일에 파일 업로드 의존성 추가
+		<!-- 파일 업로드 라이브러리 -->
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.3.1</version>
+		</dependency>
+
+3)servlet-context.xml 파일에 파일 업로드 위한 Resolver 설정
+	<!-- 파일 업로드 설정 -->
+	<beans:bean id="multipartResolver"
+	class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+	</beans:bean>
+
+4)파일 업로드 폼의 데이터를 표현할 DTO 클래스 생성 - domain.ReportDTO
+import org.springframework.web.multipart.MultipartFile;
+
+public class ReportDTO {
+	private String name;
+	//file  은 MultipartFile로 생성
+	private MultipartFile pictureurl;
+	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public MultipartFile getPictureurl() {
+		return pictureurl;
+	}
+	public void setPictureurl(MultipartFile pictureurl) {
+		this.pictureurl = pictureurl;
+	}
+	@Override
+	public String toString() {
+		return "ReportDTO [name=" + name + ", pictureurl=" + pictureurl + "]";
+	}
+}
+
+5)업로드 될 파일이 저장될 디렉토리를 webapp 디렉토리에 생성 - upload
+
+6)PageController 클래스에 파일 업로드 처리를 위한 메서드를 생성
+@RequestMapping(value="fileupload", method=RequestMethod.POST)
+public void fileupload(ReportDTO dto, HttpServletRequest request) {
+	if(dto.getPictureurl().isEmpty()) {
+		System.out.println("업로드 파일이 없습니다.");
+	}else {
+		//프로젝트 내의 upload 디렉토리의 절대경로
+		String filepath = request.getServletContext().getRealPath("/upload");
+		System.out.println(filepath);	
+		filepath = filepath + "/" + UUID.randomUUID() + 
+			dto.getPictureurl().getOriginalFilename();
+		File file = new File(filepath);
+		try {
+			dto.getPictureurl().transferTo(file);
+		}catch(Exception e) {
+			System.out.println(e.getMessage());
+		}			
+	}
+}
+	
+14. Git Hub에 만들어진 프로젝트 가져오기
+1)가져올 URL: https://github.com/itggangpae/springitem.git
+
+2)[File] - [import]를 선택하고 git을 선택한 후 clone a git URI를 선택하고 url을 입력
+
+**MyBatis(SQL Mapper, SQL을 프로그래밍 언어의 코드 와 분리시켜서 작성한 후 사용하는 방법으로 유지보수가 편리하고 구현이 쉬워서 SI 업계에서 많이 사용하지만 성능이 떨어져서 최근의 플랫폼 기업들은 ORM 방식인 JPA + Hibernate 조합을 선호)  Framework를 이용한 MySQL 데이터베이스 활용
+
+1.샘플 데이터 생성
+
+create database adam;
+
+use adam;
+
+CREATE TABLE  item(
+	itemid int,
+	itemname VARCHAR(100),
+	price int,
+	description VARCHAR(200),
+	pictureurl VARCHAR(100),
+	PRIMARY KEY (itemid)
+)engine=innodb default charset=utf8;
+
+insert into item values(1, 'Lemon', 500, 'Vitamin-A', 'lemon.jpg'); 
+insert into item values(2, 'Orange', 1500, 'Vitamin-B', 'orange.jpg'); 
+insert into item values(3, 'Kiwi', 2000, 'Vitamin-C', 'kiwi.jpg'); 
+insert into item values(4, 'Grape', 1000, 'Vitamin-D', 'grape.jpg'); 
+insert into item values(5, 'Strawberry', 2000, 'Vitamin-E', 'strawberry.jpg'); 
+insert into item values(6, 'Mandarin', 300, 'Vitamin-F', 'mandarin.jpg'); 
+
+commit;
+
+select * from item;
+
+
+commit;
+
+select * from ITEM;
+
+2.pom.xml 파일에 의존성 설정
+=>스프링에서 데이터베이스를 사용하고자 하는 경우 필수: spring-jdbc, 데이터베이스의 의존성(mysql)
+
+<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+<dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+    <version>8.0.16</version>
+</dependency>
+
+<dependency>
+	<groupId>org.springframework</groupId>
+	<artifactId>spring-jdbc</artifactId>
+	<version>${org.springframework-version}</version>
+</dependency>
+
+
+=>데이터베이스 프레임워크의 의존성
+mybatis는 mybatis 와 mybatis-spring
+
+<dependency>
+	<groupId>org.mybatis</groupId>
+	<artifactId>mybatis</artifactId>
+	<version>3.5.7</version>
+</dependency>
+<dependency>
+	<groupId>org.mybatis</groupId>
+	<artifactId>mybatis-spring</artifactId>
+	<version>2.0.6</version>
+</dependency>
+
+=>DTO 나 VO 생성을 편리하게 하기 위해서 lombok
+<!-- lombok -->
+<dependency>
+	<groupId>org.projectlombok</groupId>
+	<artifactId>lombok</artifactId>
+	<version>1.18.24</version>
+	<scope>provided</scope>
+</dependency>
+
+=>테스트를 위해서 spring-test
+<!-- 스프링 테스트 라이브러리 -->
+<dependency>
+	<groupId>org.springframework</groupId>
+	<artifactId>spring-test</artifactId>
+	<version>${org.springframework-version}</version>
+</dependency>
+
+=>데이터베이스 로그 출력을 위해서 log4jdbc 라이브러리 사용
+<dependency>
+	<groupId>org.bgee.log4jdbc-log4j2</groupId>
+	<artifactId>log4jdbc-log4j2-jdbc4</artifactId>
+	<version>1.16</version>
+</dependency>
+
+3.root-context.xml 파일에 데이터베이스 접속을 위한 DataSource 빈을 생성하는 코드를 작성
+<bean id="dataSource"
+class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+	<property name="driverClassName">
+		<value>com.mysql.cj.jdbc.Driver</value>
+	</property>
+
+	<property name="url">
+		<value>jdbc:mysql://localhost:3306/adam?useUnicode=yes&amp;characterEncoding=UTF-8</value>
+	</property>
+
+	<property name="username">
+		<value>root</value>
+	</property>
+
+	<property name="password">
+		<value>wnddkd</value>
+	</property>
+</bean>
+
+4.데이터베이스 접속 정보 테스트
+1)src/test/java 디렉토리에 클래스를 생성 - ItemTest
+
+2)ItemTest 클래스 코드 작성
+//테스트를 위한 클래스를 로드
+//JUnit - Java 의 단위 테스트를 라이브러리, Eclipse 내장
+@RunWith(SpringJUnit4ClassRunner.class)
+
+//설정 파일을 읽어옵니다.
+@ContextConfiguration(locations = {
+	"file:src/main/webapp/WEB-INF/spring/root-context.xml"})
+
+public class ItemTest {
+	//DataSource 주입
+	@Autowired
+	private DataSource dataSource;
+	
+	//테스트 메서드를 만들기 위한 어노테이션
+	@Test
+	public void testConnection() {
+		try(Connection con = 
+				dataSource.getConnection()){
+			System.out.println(con);
+		}catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	
+}
+
+3)테스트
+=>코드 위에서 마우스 오른쪽 버튼을 [Run As] - [JUnit Test]
+=>테스트 메서드 동작을 확인 : 녹색 바가 만들어지고 에러가 있으면 빨간색 바가 만들어집니다.
+=>콘솔을 확인해서 Connection 인스턴스가 출력되는지 확인하고 그 이외의 경우는 메시지를 보고 수정을 해서 다시 테스트
+
+5.MyBatis 설정
+=>MyBatis 는 xml 파일을 이용해서 사용할 수 있고 인터페이스를 이용해서 사용 가능
+=>xml 파일을 이용할 때는 환경 설정 파일을 만들고 사용할 수 도 있고 만들지 않고 바로 mapper 파일만 만들어서 사용할 수 도 있습니다.
+1)테이블을 표현하기 위한 DTO 클래스 생성: domain.ItemDTO
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class ItemDTO {
+	private int itemid;
+	private String itemname;
+	private int price;
+	private String description;
+	private String pictureurl;
+}
+
+2)mybatis 환경 설정 파일을 작성
+=>src/main/resources 디렉토리에 mybatis 디렉토리를 생성
+
+=>mybatis 디렉토리에 mybatis-config.xml 파일을 생성해서 작성
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<typeAliases>
+		<package name="com.adamsoft.item.domain"/>
+	</typeAliases>
+</configuration>
+
+3)mapper 파일 생성
+=>mybatis 디렉토리에 mappers 디렉토리를 생성
+
+=>mappers 디렉토리에 Item 테이블에 관련된 SQL을 작성할 item.xml 파일을 생성하고 기본 구조만 생성
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="itemmapper">
+</mapper>
+
+4)MyBatis 관련 Bean 생성 코드 작성
+=>root-context.xml 파일에 MyBatis를 사용하기 위한 SQLSession 클래스의 빈을 생성하는 코드를 작성
+
+<bean id="sqlSessionFactory"
+	class="org.mybatis.spring.SqlSessionFactoryBean">
+	<property name="dataSource" ref="dataSource" />
+	<property name="configLocation"
+		value="classpath:mybatis/mybatis-config.xml" />
+	<property name="mapperLocations"
+		value="classpath:mybatis/mappers/**/*.xml" />
+</bean>
+
+<bean id="sqlSession"
+	class="org.mybatis.spring.SqlSessionTemplate">
+	<constructor-arg index="0" ref="sqlSessionFactory" />
+</bean>
+
+=>트랜잭션 사용을 위한 설정을 tx 네임스페이스를 root-context.xml 파일에 추가
+
+=>root-context.xml 파일에 spring-jdbc 나 mybatis를 사용할 때 트랜잭션을 이용하기 위한 TransactionManager 클래스 의 빈 과 트랜잭션을 어노테이션으로 설정할 수 있는 빈 설정 코드를 추가
+
+5)MyBatis 설정 테스트
+=>테스트 클래스에 작성
+	@Autowired
+	private SqlSession sqlSession;
+	
+	@Test
+	public void testMyBatis() {
+		System.out.println(sqlSession);
+	}
+
+=>테스트 메서드를 실행해서 해시코드가 콘솔에 출력되는지 확인
+해시코드가 나오지 않고 에러 메시지가 보이면 수정
+
+6.Item 서비스를 사용하기 위한 구조 만들기
+1)Item 서비스 관련 domain 클래스를 생성
+=>계층 별로 주고 받을 DTO 클래스를 생성: domain.ItemDTO
+
+=>테이블과 직접 연동할 Entity 클래스 생성
+
+2)데이터베이스 연동을 위한 클래스 나 인터페이스 생성: dao.ItemRepository
+@Repository
+public class ItemRepository {
+
+	@Autowired
+	private SqlSession sqlSession;
+}
+
+3)사용자의 요청을 처리하는 비지니스 로직을 작성할 서비스를 생성
+=>요청을 처리하는 메서드의 원형을 갖는 ItemService 인터페이스를 생성
+public interface ItemService {
+
+}
+
+=>요청을 처리하는 메서드를 구현할 ItemServiceImpl 클래스를 생성
+@Service
+public class ItemServiceImpl implements ItemService {
+	@Autowired
+	private ItemRepository itemRepository;
+}
+
+=>요청 URL 과 필요한 Service 로직을 연결하고 데이터를 리턴하거나 뷰를 설정하는 Controller 클래스를 생성
+
+@Controller
+public class ItemViewController {
+	@Autowired
+	private ItemService itemService;
+}
+
+7.전체 데이터를 가져와서 출력하는 서비스를 작성
+1)item.xml 파일에 필요한 Sql을 작성
+<!-- Item 테이블의 데이터를 전부 가져오는 sql -->
+<select id="getall" 
+	resultType="ItemDTO">
+
+	select *
+	from item		
+
+</select>
+
+2)ItemRepository 클래스에 Sql을 호출하는 메서드를 작성
+	//테이블의 전체 데이터를 가져오는 메서드
+	public List<ItemDTO> getAll() {
+		return sqlSession.selectList(
+			"itemmapper.getall");
+	}
+
+3)ItemService 인터페이스에 전체 데이터를 가져오는 메서드를 선언
+//테이블의 전체 데이터를 가져오는 메서드
+public List<ItemDTO> getAll();
+
+4)ItemServiceImpl 클래스에 전체 데이터를 가져오는 요청 처리 메서드를 작성
+@Override
+public List<ItemDTO> getAll() {
+	return itemRepository.getAll();
+}
+
+5)ItemViewController 클래스에 전체 데이터를 가져오는 URL 과 서버스 요청 처리 메서드 와 View를 매핑
+
+@RequestMapping(value="getall", method=RequestMethod.GET)
+public String getAll(Model model){
+	//필요한 서비스 메서드 호출
+	List<ItemDTO> list = itemService.getAll();
+		
+	//뷰에 데이터를 전달
+	model.addAttribute("list", list);
+
+	//뷰이름 - ViewResolver 와 합쳐져서 실제 뷰가 결정
+	return "item/list";
+}
+
+6)index.jsp 파일에 전체 보기 링크를 추가
+<a href="/getall">모두 보기</a><br />
+
+7)전체 데이터를 출력하는 View를 생성
+=>WEB-INF/views 디렉토리에 item 디렉토리 생성
+
+=>item 디렉토리에 list.jsp 파일을 만들고 작성
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+    
+<!-- JSTL Core 기능 사용 설정 -->
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
+<!-- EL을 사용하기 위한 설정으로 없어도 되는 경우가 많지만 간혹 EL을 가지고 출력이 안되는 경우가 있어서 설정 -->
+<%@ page isELIgnored="false"%>
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>데이터 목록</title>
+<!-- 웹에서 링크 설정은 주소를 기준으로 합니다. 파일의 위치가 아닙니다. -->
+<link rel="stylesheet" type="text/css" href="./css/style.css">
+
+</head>
+<body>
+<div align="center" class="body">
+		<h2>상품 목록 화면</h2>
+		<table border="1">
+			<tr class="header">
+				<th align="center" width="80">상품ID</th>
+				<th align="center" width="320">상품명</th>
+				<th align="center" width="100">가격</th>
+			</tr>
+			<c:forEach var="item" items="${list}">
+				<tr class="record">
+					<td align="center">${item.itemid}</td>
+					<td align="left">${item.itemname}</td>
+					<td align="right">${item.price}원</td>
+				</tr>
+			</c:forEach>
+		</table>
+	</div>
+
+</body>
+</html>
+
+=>webapp 디렉토리에 css 디렉토리를 생성
+
+=>css 디렉토리에 style.css 파일을 생성하고 스타일을 작성
+div.body{
+	overflow-y: auto;
+    	scrollbar-face-color: #C9BFED;
+    	scrollbar-shadow-color: #EDEDED;
+	margin-top: 50px;
+	margin-bottom: 50px;
+}
+
+tr.header{
+    background: #C9BFED;
+}
+
+tr.record{
+    background: #EDEDED;
+}
+
+=>파일을 작성해서 스타일시트 없다라고 404 에러가 발생합니다.
+web.xml 파일의 appServlet 등록하는 부분을 보면 url pattern 이 /로 되어 있습니다.
+/ 는 .jsp를 제외한 모든 요청을 처리한다라는 의미입니다.
+./css/style.css 를 처리하는 메서드가 Controller에 없어서 404 에러가 발생한 것입니다.
+이문제를 해결하기 위해서는 servlet-context.xml 파일에 Controller 가 처리하지 못하는 요청은 Web Container 가 처리하도록 해주는 설정을 추가해야 합니다.
+
+=>servlet-context.xml 파일에 코드를 추가
+<default-servlet-handler />
+
+=>서버를 다시 실행하고 전체보기를 하면 404 에러가 없어져야 합니다.
+
+8.상세보기
+1)item.xml 파일에 상세보기를 위한 sql을 작성
+<!-- 상세보기 구현 -->
+<select id="getitem"
+	parameterType="java.lang.Integer"
+	resultType="ItemDTO">
+
+	select *
+	from item
+	where itemid = #{itemid}	
+</select>
+
+2)ItemRepository 클래스에 상세보기를 위한 메서드 생성
+	//하나의 데이터를 가져오는 메서드
+	public ItemDTO getItem(Integer itemid) {
+		return sqlSession.selectOne(
+			"itemmapper.getitem", itemid);
+	}
+
+3)ItemService 작업
+=>ItemService 인터페이스에 상세보기 처리 메서드를 선언
+//상세보기 처리를 위한 메서드
+public ItemDTO getItem(Integer itemid);
+
+=>ItemServiceImpl 클래스에 상세보기 처리 메서드를 구현
+@Override
+public ItemDTO getItem(Integer itemid) {
+	return itemRepository.getItem(itemid);
+}
+
+4)list.jsp 파일에 상세보기 요청을 생성하기 위해서 이름 출력 부분을 수정
+<a href="getitem?itemid=${item.itemid}">${item.itemname}</a></td>
+
+5)ItemController 클래스에서 상세보기 처리 메서드를 작성
+	//파라미터 형태로 넘어오는 상세보기 요청 처리
+	@RequestMapping(value="getitem",
+			method=RequestMethod.GET)
+	public String getItem(
+			@RequestParam("itemid") Integer itemid, 
+			Model model) {
+		ItemDTO dto = itemService.getItem(itemid);
+		model.addAttribute("item", dto);
+		return "item/getitem";
+	}
+
+6)item 디렉토리에 getitem.jsp 파일을 만들고 item을 출력하는 코드를 작성
+<%@ page contentType="text/html;charset=UTF-8"%>
+<%@ page session="false"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<html>
+<head>
+<title>상품 상세 화면</title>
+<link rel="stylesheet" type="text/css" href="./css/style.css">
+</head>
+
+<body>
+	<div align="center" class="body">
+		<h2>상품 상세 화면</h2>
+		<table>
+			<tr>
+				<td><img src="img/${item.pictureurl}"></td>
+				<td align="center">
+					<table>
+						<tr height="50">
+							<td width="80">상품명</td>
+							<td width="160">${item.itemname}</td>
+						</tr>
+						<tr height="50">
+							<td width="80">가격</td>
+							<td width="160">${item.price}원</td>
+						</tr>
+						<tr height="50">
+							<td width="80">비고</td>
+							<td width="160">${item.description}</td>
+						</tr>
+						<tr>
+							<td colspan="2" align="center" width="240"><a href="./">■목록으로
+									돌아가기</a></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>
+
+7)webapp 디렉토리에 이미지들을 img 디렉토리로 생성
+
+9.상세보기 수정
+=>파라미터가 하나인 경우는 최근에는 파라미터로 만들지 않고 URL에 추가하는 형태로 많이 만듭니다.
+
+1)list.jsp 파일의 이름 출력하는 부분의 링크를 수정
+<a href="getitem/${item.itemid}">${item.itemname}</a>
+
+2)ItemViewController 클래스의 상세보기 요청 처리 메서드를 수정
+//파라미터 형태로 넘어오는 상세보기 요청 처리
+@RequestMapping(value="getitem/{itemid}",method=RequestMethod.GET)
+public String getItem(@PathVariable("itemid") Integer itemid, Model model) {
+	ItemDTO dto = itemService.getItem(itemid);
+	model.addAttribute("item", dto);
+	return "item/getitem";
+}
+
+3)getitem.jsp 파일의 이미지 출력 경로 수정
+<img src="../img/${item.pictureurl}">
+
+10.MyBatis 의 SQL을 인터페이스에 작성해서 수행하도록 프로젝트를 변경
+1)dao 패키지에 MyBatis SQL을 작성하고 DAO 클래스의 역할까지 수행하는 인터페이스를 추가 - ItemMapper
+
+@Repository
+public interface ItemMapper {
+	@Select("select * from item")
+	public List<ItemDTO>getAll();
+	
+	@Select("select * from item where itemid = #{itemid}")
+	public ItemDTO getItem(Integer itemid);
+}
+
+2)ItemServiceImpl 클래스의 ItemRepository 대신에 ItemMapper 가 수행하도록 변경
+
+	@Autowired
+	//private ItemRepository itemRepository;
+	
+	private ItemMapper itemRepository;
+
+3)root-context.xml 파일에서 MyBatis 사용 bean 설정 코드를 수정
+<!-- 인터페이스를 이용하는 MyBatis 설정 -->
+ <bean id="sqlSessionFactory"
+	class="org.mybatis.spring.SqlSessionFactoryBean">
+	<property name="dataSource" ref="dataSource" />
+</bean>
+
+<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+	<property name="basePackage" value="com.adamsoft.item.dao"/>
+</bean>
+
+4)ItemRepository 클래스를 삭제하던가 빈이 생성되지 않도록 수정
+//@Repository
+public class ItemRepository {
+
+//	@Autowired
+	private SqlSession sqlSession;
+	
+	//테이블의 전체 데이터를 가져오는 메서드
+	public List<ItemDTO> getAll() {
+		return sqlSession.selectList(
+			"itemmapper.getall");
+	}
+	
+	//하나의 데이터를 가져오는 메서드
+	public ItemDTO getItem(Integer itemid) {
+		return sqlSession.selectOne(
+			"itemmapper.getitem", itemid);
+	}
+	
+}
+
+10.json 출력
+=>REST API: 일관성이 있는 URL을 이용해서 데이터를 출력
+1)데이터 포맷
+=>text: 문자열 인데  플랫 파일, csv, tsv, fwf 등으로 구분하기도 합니다.
+=>xml: 태그 형태로 데이터 표현, 사람이 알아보기는 좋음
+=>json: 자바스크립트 객체 표현법으로 데이터를 표현, 사람이 알아보기는 쉽지 않지만 기계가 알아보기는 어렵지 않고 XML 보다 경량
+=>yml: 이메일 표현 형식으로 데이터를 표현하는 방법인데 최근에 설정 파일들에 많이 이용
+
+
+2)RestController
+=>REST API를 위한 컨트롤러
+=>Controller에서 문자열을 리턴하면 csv 가 되고 DTO 나 Map 그리고 List를 리턴하면 json 형태로 만들어서 출력합니다.
+
+3)전체보기 와 상세보기를 REST API로 구현
+=>pom.xml 파일에 json 출력을 위한 라이브러리의 의존성 추가
+<!-- JSON 출력을 위한 라이브러리 -->
+<dependency>
+	<groupId>com.fasterxml.jackson.core</groupId>
+	<artifactId>jackson-databind</artifactId>
+	<version>2.13.3</version>
+</dependency>
+
+4)controller 패키지에 JSON 출력을 위한 클래스를 만들고 요청 처리 메서드 작성 - controller.ItemRestController
+
+@RestController
+public class ItemRestController {
+	@Autowired
+	private ItemService itemService;
+	
+	//테이블의 데이터 전체 출력
+	@RequestMapping(value="list.json", 
+			method=RequestMethod.GET)
+	public Map<String, Object> getAll(){
+		Map <String, Object> map = new HashMap<>();
+		List<ItemDTO> list = itemService.getAll();
+		
+		map.put("result", true);
+		map.put("data", list);
+		return map;
+	}
+	
+	//상세보기
+	@RequestMapping(value="{itemid}/item.json",
+			method=RequestMethod.GET)
+	public Map<String, Object> getItem(
+			@PathVariable("itemid") Integer itemid){
+		Map <String, Object> map = new HashMap<>();
+		ItemDTO item = itemService.getItem(itemid);
+		map.put("result", true);
+		map.put("data", item);
+		
+		return map;
+	}
+	
+
+}
+
+
+5)브라우저에서 테스트
+
+
+

@@ -10,4 +10,18 @@
 		select *
 		from item		
 	</select>
+	
+	<!-- 상세보기 구현 -->
+	<select id="getitem"
+			parameterType="java.lang.Integer"
+			resultType="ItemDTO">
+		select *
+		from item
+		where itemid = #{itemid}	
+	</select>
 </mapper>
+
+
+
+
+
